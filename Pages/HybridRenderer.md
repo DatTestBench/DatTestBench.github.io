@@ -1,3 +1,4 @@
+![Hybrid Renderer](../Images/HybridRenderer.png)
 
 ## Hybrid Renderer
 
