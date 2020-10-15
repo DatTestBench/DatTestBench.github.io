@@ -1,8 +1,9 @@
 Projects:
 
-[Bedtime Breakout](https://sebastien-vermeulen.itch.io/bedtime-breakout)
+[<img src="Images/BedtimeBreakout.png">](Pages/BedtimeBreakout.md)
 
-[Benchine](https://github.com/DatTestBench/Benchine)
+[Benchine](Pages/Benchine.md)
 
-[Software Raytracer](https://github.com/DatTestBench/SoftwareRaytracer)
+[Software Raytracer](Pages/SoftwareRaytracer.md)
 
+[Hybrid Renderer](Pages/HybridRenderer.md)
