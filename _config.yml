@@ -4,4 +4,4 @@ description: Game developer interested in Game Engines and Graphics!
 theme: jekyll-theme-midnight
 
 github:
-  is_project_page: true
+  is_project_page: false
