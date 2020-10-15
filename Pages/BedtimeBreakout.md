@@ -1,7 +1,9 @@
 ![Bedtime Breakout](../Images/BedtimeBreakoutBanner.png)
 
 
-Bedtime breakout 
+Bedtime breakout
+
+
 
 ## Project
 [Itch.io project page, where you can find devlogs, and downloads](https://sebastien-vermeulen.itch.io/bedtime-breakout)
