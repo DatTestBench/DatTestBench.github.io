@@ -6,6 +6,8 @@ Benchine is a small 2D Game engine using
 - [Dear ImGui](https://github.com/ocornut/imgui)
 - [GLM](https://glm.g-truc.net/)
 - XINPUT
+- SDL 2
+- SVG/JSON level loading system
 - Component system.
 
 ### Bubble Bobble
