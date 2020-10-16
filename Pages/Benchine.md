@@ -12,7 +12,7 @@ Benchine is a small 2D Game engine using
 
 Benchine was used to implement bubble bobble.
 
-![BubbleBobble](./Images/BubbleBobble.png)
+![BubbleBobble](../Images/BubbleBobble.png)
 
 [Github link](https://github.com/DatTestBench/Benchine)
 
