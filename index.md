@@ -5,7 +5,7 @@ A hybrid rasterized renderer written in C++, that allows switching between softw
 <br>
 
 
-[<img src="Images/HybridRendererBanner.png">](Pages/Benchine.md)<br>
+[<img src="Images/BenchineBanner.png">](Pages/Benchine.md)<br>
 2D OpenGL game engine made in C++. Used to remake Bubble Bobble.<br>
 [more...](Pages/Benchine.md)<br>
 <br>
