@@ -13,6 +13,7 @@ A 3D rasterized renderer that allows you to switch between DirectX 11, and softw
 2 Seperate Render Pipelines
 
 - **Software**
+
 ```cpp
 const auto clearColor = RGBColor(128.f, 128.f, 128.f);
 
