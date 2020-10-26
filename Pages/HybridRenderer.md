@@ -15,15 +15,17 @@ A 3D rasterized renderer that allows you to switch between DirectX 11, and softw
 - **Software**
 
 ```cpp
-const auto clearColor = RGBColor(128.f, 128.f, 128.f);
-
-// Clear OpenGL and software buffers
-glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
-glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+// This is the surface we'll be rendering to, we need to lock it to write to it
 SDL_LockSurface(m_pSoftwareBuffer);
 
-std::fill_n(m_pDepthBuffer, static_cast<uint64_t>(m_Width * m_Height), FLT_MAX);
-std::fill_n(static_cast<uint32_t*>(m_pSoftwareBufferPixels), static_cast<uint64_t>(m_Width * m_Height), SDL_MapRGB(m_pSoftwareBuffer->format,
+// Clear OpenGL and software buffers
+const auto clearColor = RGBColor(128.f, 128.f, 128.f);
+glClearColor(clearColor.r / 255.f, clearColor.g / 255.f, clearColor.b / 255.f, 1.0f);
+glClear(GL_COLOR_BUFFER_BIT);
+
+std::fill_n(m_pDepthBuffer, m_Width * m_Height, std::numeric_limits<float>::infinity());
+std::fill_n(static_cast<uint32_t*>(m_pSoftwareBufferPixels), m_Width * m_Height,
+	SDL_MapRGB(m_pSoftwareBuffer->format,
     static_cast<uint8_t>(clearColor.r),
     static_cast<uint8_t>(clearColor.g),
     static_cast<uint8_t>(clearColor.b)));
@@ -34,12 +36,14 @@ ImGui_ImplSDL2_NewFrame(m_pWindow);
 ImGui::NewFrame();
 
 // Render
-for (auto& o : m_pSceneGraph->GetCurrentSceneObjects())
+for (auto pObject : m_pSceneGraph->GetCurrentSceneObjects())
 {
-	m_pSceneGraph->GetCamera()->MakeScreenSpace(o);
-	o->Rasterize(m_pSoftwareBuffer, static_cast<uint32_t*>(m_pSoftwareBuffer->pixels), m_pDepthBuffer, m_Width, m_Height);
+	m_pSceneGraph->GetCamera()->MakeScreenSpace(pObject);
+	pObject->Rasterize(m_pSoftwareBuffer, m_pSoftwareBufferPixels, m_pDepthBuffer, m_Width, m_Height);
 }
-SDL_LockSurface(m_pSoftwareBuffer);
+
+// We're done writing to the surface, so we can unlock it
+SDL_UnlockSurface(m_pSoftwareBuffer);
 
 // Render software render as background image to allow ImGui overlay
 ImplementSoftwareWithOpenGL();
@@ -59,8 +63,9 @@ SDL_GL_SwapWindow(m_pWindow);
 <br>
 
 ```cpp
+// Confirm DirectX pipeline is initialized
 if (!m_IsInitialized)
-	return;
+	return; // todo log if fail
 
 // Clear Buffers
 const auto clearColor = RGBColor(0.f, 0.f, 0.3f);
@@ -85,8 +90,9 @@ SceneGraph::GetInstance()->RenderDebugUI();
 ImGui::Render();	
 ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-//Present
+//Present DirectX render
 m_pSwapChain->Present(0, 0);
+break;
 ```
 <br>
 
@@ -96,44 +102,43 @@ The software image is rendered to an `SDL_Surface`, which can be used to create 
 ```cpp
 void Renderer::ImplementSoftwareWithOpenGL() const noexcept
 {
-// Generate and bind a texture resource from OpenGL
-GLuint texture;
-glGenTextures(1, &texture );
-glBindTexture(GL_TEXTURE_2D, texture );
+	// Generate and bind a texture resource from OpenGL
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
-// Make a Texture2D from the software buffer we rendered
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_pSoftwareBuffer->w, m_pSoftwareBuffer->h, 0,
-	GL_BGRA,GL_UNSIGNED_BYTE, m_pSoftwareBuffer->pixels );
+	// Make a Texture2D from the software buffer we rendered
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_pSoftwareBuffer->w, m_pSoftwareBuffer->h, 0,
+		GL_BGRA,GL_UNSIGNED_BYTE, m_pSoftwareBufferPixels );
 
-// Mipmap filtering. Has to be set for texture to render
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// Mipmap filtering. Has to be set for texture to render
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-// Draw fullscreen quad with software renderer output as texture
-glEnable(GL_TEXTURE_2D);
-{
-	glBegin(GL_QUADS);
+	// Draw fullscreen quad with software renderer output as texture
+	glEnable(GL_TEXTURE_2D);
 	{
+		glBegin(GL_QUADS);
+		{
+			const auto uvLeft = 0.0f;	const auto vLeft = -1.f;
+			const auto uvRight = 1.0f;	const auto vRight = 1.f;
+			const auto uvTop = 0.0f;	const auto vTop = 1.f;
+			const auto uvBottom = 1.0f;	const auto vBottom = -1.f;
 
-		const auto uvLeft = 0.0f;
-		const auto uvRight = 1.0f;
-		const auto uvTop = 0.0f;
-		const auto uvBottom = 1.0f;
-				
-		glTexCoord2f(uvLeft, uvBottom); glVertex3f(-1.f, -1.f, -1.f);
-		glTexCoord2f(uvLeft, uvTop); glVertex3f(-1.f, 1.f, -1.f);
-		glTexCoord2f(uvRight, uvTop); glVertex3f(1.f, 1.f, -1.f);
-		glTexCoord2f(uvRight, uvBottom); glVertex3f(1.f, -1.f, -1.f);
+			glTexCoord2f(uvLeft, uvBottom);		glVertex2f(vLeft, vBottom);
+			glTexCoord2f(uvLeft, uvTop);	 	glVertex2f(vLeft, vTop);
+			glTexCoord2f(uvRight,uvTop);	 	glVertex2f(vRight,vTop);
+			glTexCoord2f(uvRight,uvBottom);		glVertex2f(vRight,vBottom);
+		}
+		glEnd();
 	}
-	glEnd();
-}
-glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D);
+	
+	// Don't forget to delete the texture you've just created, since this is happening every frame! (unless you want to make a ticking memory leak time-bomb, I guess)
+	glDeleteTextures(1, &texture);
 
-// Don't forget to delete the texture you've just created, since this is happening every frame! (unless you want to make a ticking memory leak time-bomb, I guess)
-glDeleteTextures(1, &texture);
-
-// Unbinding the texture for good measure
-glBindTexture(GL_TEXTURE_2D, 0);
+	// Unbinding the texture for good measure
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 ```
 
