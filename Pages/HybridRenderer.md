@@ -55,6 +55,7 @@ SDL_GL_SwapWindow(m_pWindow);
 ```
 
 - **DirectX**
+<br>
 
 ```cpp
 if (!m_IsInitialized)
@@ -86,10 +87,11 @@ ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 //Present
 m_pSwapChain->Present(0, 0);
 ```
+<br>
 
 To allow Dear ImGui to work in software mode, you may notice that OpenGL is used to present the final render to the user.
 The software image is rendered to an `SDL_Surface`, which can be used to create an OpenGL texture as follows
-
+<br>
 ```cpp
 void Renderer::ImplementSoftwareWithOpenGL() const noexcept
 {
