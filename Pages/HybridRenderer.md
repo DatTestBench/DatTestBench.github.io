@@ -132,7 +132,7 @@ glDeleteTextures(1, &texture);
 // Unbinding the texture for good measure
 glBindTexture(GL_TEXTURE_2D, 0);
 }
-
+```
 
 
 [Github Link](https://github.com/DatTestBench/HybridRenderer)
