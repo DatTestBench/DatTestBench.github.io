@@ -65,7 +65,7 @@ SDL_GL_SwapWindow(m_pWindow);
 ```cpp
 // Confirm DirectX pipeline is initialized
 if (!m_IsInitialized)
-	return; // todo log if fail
+	return;
 
 // Clear Buffers
 const auto clearColor = RGBColor(0.f, 0.f, 0.3f);
