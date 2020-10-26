@@ -4,9 +4,9 @@
 
 A 3D rasterized renderer that allows you to switch between DirectX 11, and software rendering.
 - Software and DirectX rendering modes.
-- ImGui debug UI and logger
-
-
+- ImGui debug UI and logger.
+- Color and depth view in software mode.
+- Transparency in hardware mode
 
 ## Implementation
 
@@ -142,8 +142,15 @@ void Renderer::ImplementSoftwareWithOpenGL() const noexcept
 }
 ```
 
+Some of the libraries used for this project:
+- [GLM](https://glm.g-truc.net/0.9.9/index.html) (math library)
+- [Dear ImGui](https://github.com/ocornut/imgui) (UI)
+- [SDL2](https://www.libsdl.org/) (program window)
+- [SDL_image](https://www.libsdl.org/projects/SDL_image/) (loading textures)
+- [magic_enum](https://github.com/Neargye/magic_enum) (pretty neat enum reflection)
 
-[Github Link](https://github.com/DatTestBench/HybridRenderer)
+
+[Project Repository](https://github.com/DatTestBench/HybridRenderer)
 
 <br>
 
