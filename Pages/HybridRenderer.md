@@ -92,7 +92,6 @@ ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 //Present DirectX render
 m_pSwapChain->Present(0, 0);
-break;
 ```
 <br>
 
