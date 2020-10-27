@@ -143,12 +143,12 @@ void Renderer::ImplementSoftwareWithOpenGL() const noexcept
 ```
 
 Some of the libraries used for this project:
-- [GLM](https://glm.g-truc.net/0.9.9/index.html) (math library)
+- [glm](https://glm.g-truc.net/0.9.9/index.html) (math library)
 - [Dear ImGui](https://github.com/ocornut/imgui) (UI)
 - [SDL2](https://www.libsdl.org/) (program window)
 - [SDL_image](https://www.libsdl.org/projects/SDL_image/) (loading textures)
 - [magic_enum](https://github.com/Neargye/magic_enum) (pretty neat enum reflection)
-
+- [vld](https://kinddragon.github.io/vld/) (memory leak detection)
 
 [Project Repository](https://github.com/DatTestBench/HybridRenderer)
 
